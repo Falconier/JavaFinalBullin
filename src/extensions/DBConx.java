@@ -43,15 +43,8 @@ public class DBConx {
             Statement statmnt = conx.createStatement();
             String sql = "drop table if exists Customer";
             statmnt.execute(sql);
+
             sql = "create table if not exists Customer (ID integer primary key, FirstName long varchar, LastName long varchar, Address long varchar, City long varchar, State varchar(2), ZIP integer, Phone varchar(10), EMail long varchar, CreditLimit double)";
-            statmnt.execute(sql);
-//            conx.commit();
-            sql = "create table if not exists Coffee (ID integer primary key , CoffeeName long varchar, Description long varchar, Price double, QuantityAvailable integer)";
-            statmnt.execute(sql);
-//            conx.commit();
-            sql = "create table if not exists Orders (ID integer primary key , CustomerID integer references Customer, CoffeeID integer references Coffee, QuantityOrdered double, Total double)";
-            statmnt.execute(sql);
-//            conx.commit();
             statmnt.execute(sql);
             sql = "INSERT INTO Customer (\"FirstName\", \"LastName\", \"Address\", \"City\", \"State\", \"ZIP\", \"Phone\", \"EMail\", \"CreditLimit\") VALUES ('Jane', 'Doe', '4321 Nowhere St', 'Nowhere', 'OK', 54321, '0987654321', 'janedoe@email.com', 15.00)";
             statmnt.execute(sql);
@@ -79,7 +72,29 @@ public class DBConx {
             statmnt.execute(sql);
             sql = "insert into Coffee (CoffeeName, Description, Price, QuantityAvailable) VALUES ('Deep Dark Love','Dark Roast, Rich and Caramelly Notes',2.27,22)";
             statmnt.execute(sql);
+
+            sql = "drop table if exists Orders";
+            statmnt.execute(sql);
+            sql = "create table if not exists Orders (ID integer primary key , CustomerID integer references Customer, CoffeeID integer references Coffee, QuantityOrdered double, Total double)";
+            statmnt.execute(sql);
+
+            sql = "insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) VALUES (1, 3, 2.00, 5.32)";
+            statmnt.execute(sql);
+            sql = "insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) VALUES (2, 1, 8.00, 19.44)";
+            statmnt.execute(sql);
+            sql = "insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) VALUES (3, 4, 2.00, 6.30)";
+            statmnt.execute(sql);
+            sql = "insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) VALUES (4, 5, 4.00, 9.08)";
+            statmnt.execute(sql);
+            sql = "insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) VALUES (4, 3, 1.00, 2.66)";
+            statmnt.execute(sql);
+            sql = "insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) VALUES (5, 3, 1.00, 2.66)";
+            statmnt.execute(sql);
+            sql = "insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) VALUES (2, 2, 3.00, 8.25)";
+            statmnt.execute(sql);
 //            conx.commit();
+
+
 
 
             //SideLoad
@@ -93,7 +108,7 @@ public class DBConx {
         }
     }
 
-    protected void sideLoad() {
+    private void sideLoad() {
         ResultSet resultsOfQuery = null;
         try {
             CustomerList.clear();
@@ -121,8 +136,18 @@ public class DBConx {
                 CoffeeList.add(newCoffee);
 //                    System.out.println(newCustomer.toString());
             }
+            sql = "select * from Orders";
+            resultsOfQuery = statmnt.executeQuery(sql);
+            meta = resultsOfQuery.getMetaData();
+            numOfCol = meta.getColumnCount();
+            i = 1;
+            while (resultsOfQuery.next()) {
+                Order newOrder = new Order(resultsOfQuery.getObject(1).toString(), resultsOfQuery.getObject(2).toString(), resultsOfQuery.getObject(3).toString(), resultsOfQuery.getObject(4).toString(), resultsOfQuery.getObject(5).toString());
+                OrderList.add(newOrder);
+//                System.out.println(newOrder.toString());
+            }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
     }
@@ -145,12 +170,14 @@ public class DBConx {
 
     }
 
+    //TODO: write newOrder
+
 
     public static void main(String[] args) {
         DBConx conx = new DBConx();
         conx.createDefaultTables();
-        for (int i = 0; i < conx.CustomerList.size(); i++) {
-            System.out.println(conx.CustomerList.get(i).toString());
+        for (int i = 0; i < conx.OrderList.size(); i++) {
+            System.out.println(conx.OrderList.get(i).toString());
         }
     }
 

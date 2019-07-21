@@ -1,6 +1,9 @@
 package gui;
 
 import extensions.DBConx;
+import models.Coffee;
+import models.Customer;
+import models.Order;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
@@ -12,6 +15,7 @@ import java.awt.Toolkit;
 
 import java.awt.GridBagConstraints;
 import java.awt.FlowLayout;
+import java.util.ArrayList;
 
 public class DisplayInfo extends JFrame {
 
@@ -65,6 +69,41 @@ public class DisplayInfo extends JFrame {
             if (choice.equalsIgnoreCase(listChoices[0])) {
                 String fNameEntry = JOptionPane.showInputDialog("Enter Customers First Name:");
                 String lNameEntry = JOptionPane.showInputDialog("Enter Customers Last Name:");
+            }else
+            {
+                int customerID = Integer.parseInt(JOptionPane.showInputDialog("Enter Customer ID Number:"));
+                ArrayList<Order> searchedOrders = new ArrayList<Order>();
+                for (int i = 0; i<conx.OrderList.size();i++)
+                {
+                    if(conx.OrderList.get(i).getCustomerID() == customerID) {
+                        searchedOrders.add(conx.OrderList.get(i));
+                    }
+                }
+
+                String[] listEntries = new String[searchedOrders.size()];
+                for (int i = 0; i < searchedOrders.size(); i++) {
+                    Order tempOrder = searchedOrders.get(i);
+                    Customer tempCustomer = null;
+                    Coffee tempCoffee = null;
+                    for (int j = 0; j < conx.CustomerList.size(); j++) {
+                        if(conx.CustomerList.get(j).getID() == tempOrder.getCustomerID())
+                        {
+                            tempCustomer = conx.CustomerList.get(j);
+                            break;
+                        }
+                    }
+                    for (int j = 0; j<conx.CoffeeList.size();j++)
+                    {
+                        if(conx.CoffeeList.get(j).getID() == tempOrder.getCoffeeID())
+                        {
+                            tempCoffee = conx.CoffeeList.get(j);
+                            break;
+                        }
+                    }
+                    listEntries[i] = "" + tempOrder.getID() + ", " + tempCustomer.getFullName() + ", " + tempCoffee.getName() + ", " + tempOrder.getQuantity() + ", " + tempOrder.getTotal();
+                }
+                list = new JList(listEntries);
+
             }
         } else {
             setTitle("The Coffee Made Us Do It");

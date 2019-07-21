@@ -3,17 +3,13 @@ package gui;
 import extensions.DBConx;
 
 import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
 
 import java.awt.BorderLayout;
-import javax.swing.JDesktopPane;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.GridBagLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.BoxLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 
@@ -27,6 +23,8 @@ import javax.swing.ImageIcon;
 
 public class CoffeeShopApp extends JFrame {
     public CoffeeShopApp() {
+
+        //TODO: add paragraph to screen
 
         DBConx conx = new DBConx();
         conx.createDefaultTables();
@@ -107,6 +105,11 @@ public class CoffeeShopApp extends JFrame {
         pnlBtns.add(btnNewCustomer, gbc_btnNewCustomer);
 
         JButton btnNewOrder = new JButton("New Order");
+        btnNewOrder.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        	    NewOrderForm window = new NewOrderForm(conx);
+        	}
+        });
         GridBagConstraints gbc_btnNewOrder = new GridBagConstraints();
         gbc_btnNewOrder.fill = GridBagConstraints.BOTH;
         gbc_btnNewOrder.insets = new Insets(0, 0, 5, 0);

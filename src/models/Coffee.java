@@ -34,6 +34,15 @@ public class Coffee {
         Quantity = Integer.parseInt(quantity);
     }
 
+//    public Coffee(Coffee tempCoffee)
+//    {
+//        ID = tempCoffee.ID;
+//        Name = tempCoffee.Name;
+//        Description = tempCoffee.Description;
+//        Price = tempCoffee.Price;
+//        Quantity = tempCoffee.Quantity;
+//    }
+
     public int getID() {
         return ID;
     }

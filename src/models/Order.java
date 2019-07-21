@@ -30,9 +30,18 @@ public class Order {
         ID = Integer.parseInt(id);
         CustomerID = Integer.parseInt(custID);
         CoffeeID = Integer.parseInt(cofeID);
-        Quantity = Integer.parseInt(quantity);
+        Quantity = (int) Double.parseDouble(quantity);
         Total = Double.parseDouble(total);
     }
+
+//    public Order(Order tempOrder)
+//    {
+//        ID = tempOrder.ID;
+//        CustomerID = tempOrder.CustomerID;
+//        CoffeeID = tempOrder.CoffeeID;
+//        Quantity = tempOrder.Quantity;
+//        Total = tempOrder.Total;
+//    }
 
     public int getID() {
         return ID;
@@ -72,5 +81,12 @@ public class Order {
 
     public void setTotal(double total) {
         Total = total;
+    }
+
+    @Override
+    public String toString()
+    {
+        String result = "" + getID() + ", " + getCustomerID() +", " + getCoffeeID() + ", " +getQuantity() + ", " + getTotal();
+        return result;
     }
 }

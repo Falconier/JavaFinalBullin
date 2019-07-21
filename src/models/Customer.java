@@ -56,6 +56,20 @@ public class Customer {
         CreditLimit = Double.parseDouble(creditLimit);
     }
 
+//    public Customer(Customer temp)
+//    {
+//        ID = temp.ID;
+//        FirstName = temp.FirstName;
+//        LastName = temp.LastName;
+//        Address = temp.Address;
+//        City = temp.City;
+//        State = temp.State;
+//        ZIP = temp.ZIP;
+//        Phone = temp.Phone;
+//        EMail = temp.EMail;
+//        CreditLimit = temp.CreditLimit;
+//    }
+
     public int getID() {
         return ID;
     }
@@ -134,6 +148,11 @@ public class Customer {
 
     public void setCreditLimit(double creditLimit) {
         CreditLimit = creditLimit;
+    }
+
+    public String getFullName()
+    {
+        return getFirstName() + " " + getLastName();
     }
 
     @Override
