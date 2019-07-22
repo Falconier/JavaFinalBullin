@@ -16,6 +16,8 @@ import java.awt.Toolkit;
 import java.awt.GridBagConstraints;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class DisplayInfo extends JFrame {
 
@@ -69,6 +71,48 @@ public class DisplayInfo extends JFrame {
             if (choice.equalsIgnoreCase(listChoices[0])) {
                 String fNameEntry = JOptionPane.showInputDialog("Enter Customers First Name:");
                 String lNameEntry = JOptionPane.showInputDialog("Enter Customers Last Name:");
+                ArrayList<Order> searchedOrders = new ArrayList<Order>();
+
+                int customerID = 0;
+                for(int i = 0;i<conx.CustomerList.size();i++)
+                {
+                    if(conx.CustomerList.get(i).getFullName().equals("" + fNameEntry + " " + lNameEntry))
+                    {
+                        customerID = conx.CustomerList.get(i).getID();
+                    }
+                }
+
+                for (int i = 0; i<conx.OrderList.size();i++)
+                {
+
+                    if(conx.OrderList.get(i).getCustomerID() == customerID) {
+                        searchedOrders.add(conx.OrderList.get(i));
+                    }
+                }
+
+                String[] listEntries = new String[searchedOrders.size()];
+                for (int i = 0; i < searchedOrders.size(); i++) {
+                    Order tempOrder = searchedOrders.get(i);
+                    Customer tempCustomer = null;
+                    Coffee tempCoffee = null;
+                    for (int j = 0; j < conx.CustomerList.size(); j++) {
+                        if(conx.CustomerList.get(j).getID() == tempOrder.getCustomerID())
+                        {
+                            tempCustomer = conx.CustomerList.get(j);
+                            break;
+                        }
+                    }
+                    for (int j = 0; j<conx.CoffeeList.size();j++)
+                    {
+                        if(conx.CoffeeList.get(j).getID() == tempOrder.getCoffeeID())
+                        {
+                            tempCoffee = conx.CoffeeList.get(j);
+                            break;
+                        }
+                    }
+                    listEntries[i] = "" + tempOrder.getID() + ", " + tempCustomer.getFullName() + ", " + tempCoffee.getName() + ", " + tempOrder.getQuantity() + ", " + tempOrder.getTotal();
+                }
+                list = new JList(listEntries);
             }else
             {
                 int customerID = Integer.parseInt(JOptionPane.showInputDialog("Enter Customer ID Number:"));
@@ -110,6 +154,14 @@ public class DisplayInfo extends JFrame {
         }
 
         getContentPane().add(list, BorderLayout.CENTER);
+        
+        JButton btnClose = new JButton("Close");
+        btnClose.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        			dispose();
+        	}
+        });
+        getContentPane().add(btnClose, BorderLayout.SOUTH);
         setVisible(true);
     }
 

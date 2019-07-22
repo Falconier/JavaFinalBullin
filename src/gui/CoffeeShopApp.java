@@ -20,6 +20,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
+import javax.swing.SpringLayout;
+import javax.swing.JTextPane;
 
 public class CoffeeShopApp extends JFrame {
     public CoffeeShopApp() {
@@ -27,7 +29,8 @@ public class CoffeeShopApp extends JFrame {
         //TODO: add paragraph to screen and move logo image
 
         DBConx conx = new DBConx();
-        conx.createDefaultTables();
+        //conx.createDefaultTables();
+        conx.sideLoad();
 
         Dimension screenDimensions = Toolkit.getDefaultToolkit().getScreenSize();
         int width = screenDimensions.width - 200;
@@ -119,24 +122,23 @@ public class CoffeeShopApp extends JFrame {
 
         JPanel pnlLogo = new JPanel();
         getContentPane().add(pnlLogo, BorderLayout.CENTER);
-        GridBagLayout gbl_pnlLogo = new GridBagLayout();
-        gbl_pnlLogo.columnWidths = new int[]
-                {201, 310, 0};
-        gbl_pnlLogo.rowHeights = new int[]
-                {810, 0};
-        gbl_pnlLogo.columnWeights = new double[]
-                {0.0, 0.0, Double.MIN_VALUE};
-        gbl_pnlLogo.rowWeights = new double[]
-                {0.0, Double.MIN_VALUE};
-        pnlLogo.setLayout(gbl_pnlLogo);
+        SpringLayout sl_pnlLogo = new SpringLayout();
+        pnlLogo.setLayout(sl_pnlLogo);
 
         JLabel imgLogo = new JLabel("");
+        sl_pnlLogo.putConstraint(SpringLayout.NORTH, imgLogo, 60, SpringLayout.NORTH, pnlLogo);
+        sl_pnlLogo.putConstraint(SpringLayout.WEST, imgLogo, 364, SpringLayout.WEST, pnlLogo);
+        sl_pnlLogo.putConstraint(SpringLayout.SOUTH, imgLogo, 396, SpringLayout.NORTH, pnlLogo);
+        sl_pnlLogo.putConstraint(SpringLayout.EAST, imgLogo, 674, SpringLayout.WEST, pnlLogo);
         imgLogo.setIcon(new ImageIcon(CoffeeShopApp.class.getResource("/images/CoffeeLogo 2[300].jpg")));
-        GridBagConstraints gbc_imgLogo = new GridBagConstraints();
-        gbc_imgLogo.fill = GridBagConstraints.BOTH;
-        gbc_imgLogo.gridx = 1;
-        gbc_imgLogo.gridy = 0;
-        pnlLogo.add(imgLogo, gbc_imgLogo);
+        pnlLogo.add(imgLogo);
+        
+        JTextPane txtpnCompanyStatement = new JTextPane();
+        sl_pnlLogo.putConstraint(SpringLayout.NORTH, txtpnCompanyStatement, 6, SpringLayout.SOUTH, imgLogo);
+        sl_pnlLogo.putConstraint(SpringLayout.WEST, txtpnCompanyStatement, 257, SpringLayout.WEST, pnlLogo);
+        txtpnCompanyStatement.setText("Our mission is to serve and roast the absolute best coffee in the world. \nWe strive to seek out fairtrade opportunities and to be good stewards of Mother Earth. \nWe think we've done a great job and hope you will agree. \nJust remeber, \"The Coffee Made Us Do It!\"");
+        txtpnCompanyStatement.setEditable(false);
+        pnlLogo.add(txtpnCompanyStatement);
 
         JPanel panel = new JPanel();
         FlowLayout flowLayout = (FlowLayout) panel.getLayout();
@@ -173,5 +175,4 @@ public class CoffeeShopApp extends JFrame {
     public static void main(String[] args) {
         CoffeeShopApp window = new CoffeeShopApp();
     }
-
 }

@@ -115,7 +115,7 @@ public class DBConx {
         }
     }
 
-    private void sideLoad() {
+    public void sideLoad() {
         ResultSet resultsOfQuery = null;
         try {
             CustomerList.clear();
