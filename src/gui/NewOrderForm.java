@@ -5,19 +5,14 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
-import javax.swing.Box;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SpringLayout;
+import javax.swing.*;
 
 import extensions.DBConx;
 
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JButton;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class NewOrderForm extends JFrame {
     private JTextField txtQuantity;
@@ -86,6 +81,7 @@ public class NewOrderForm extends JFrame {
         formPnl.add(lblQuantity);
 
         txtQuantity = new JTextField();
+        
         txtQuantity.setText("1");
 
         sl_formPnl.putConstraint(SpringLayout.WEST, txtQuantity, 0, SpringLayout.WEST, lblQuantity);
@@ -105,12 +101,21 @@ public class NewOrderForm extends JFrame {
         sl_formPnl.putConstraint(SpringLayout.EAST, lblOutputTotal, 164, SpringLayout.EAST, txtQuantity);
         formPnl.add(lblOutputTotal);
 
-        //TODO: remove this button or replace it with one to save the order
-        JButton btnGenerateSql = new JButton("generate sql");
+        JButton btnPlaceOrder = new JButton("Place Order");
 
-        sl_formPnl.putConstraint(SpringLayout.WEST, btnGenerateSql, 483, SpringLayout.WEST, formPnl);
-        sl_formPnl.putConstraint(SpringLayout.SOUTH, btnGenerateSql, -129, SpringLayout.SOUTH, formPnl);
-        formPnl.add(btnGenerateSql);
+        sl_formPnl.putConstraint(SpringLayout.WEST, btnPlaceOrder, 483, SpringLayout.WEST, formPnl);
+        sl_formPnl.putConstraint(SpringLayout.SOUTH, btnPlaceOrder, -129, SpringLayout.SOUTH, formPnl);
+        formPnl.add(btnPlaceOrder);
+        
+        JButton btnCancel = new JButton("Cancel");
+        btnCancel.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        			dispose();
+        	}
+        });
+        sl_formPnl.putConstraint(SpringLayout.SOUTH, btnCancel, 0, SpringLayout.SOUTH, btnPlaceOrder);
+        sl_formPnl.putConstraint(SpringLayout.EAST, btnCancel, 0, SpringLayout.EAST, lblQuantity);
+        formPnl.add(btnCancel);
 
         //ActionListners and Actions
         cBoxCoffee.addActionListener(new ActionListener() {
@@ -118,7 +123,6 @@ public class NewOrderForm extends JFrame {
                 double selectedCoffeeCost = conx.CoffeeList.get(cBoxCoffee.getSelectedIndex()).getPrice();
                 double quantityToOrder = Double.parseDouble((txtQuantity.getText().toString().isEmpty() ? "0.00" : txtQuantity.getText().toString()));
                 if (quantityToOrder > conx.CoffeeList.get(cBoxCoffee.getSelectedIndex()).getQuantity()) {
-                    //TODO: add error message
                 }
                 double subTotal = selectedCoffeeCost * quantityToOrder;
                 lblOutputTotal.setText("" + subTotal);
@@ -130,23 +134,44 @@ public class NewOrderForm extends JFrame {
                 double selectedCoffeeCost = conx.CoffeeList.get(cBoxCoffee.getSelectedIndex()).getPrice();
                 double quantityToOrder = Double.parseDouble((txtQuantity.getText().toString().isEmpty() ? "0.00" : txtQuantity.getText().toString()));
                 if (quantityToOrder > conx.CoffeeList.get(cBoxCoffee.getSelectedIndex()).getQuantity()) {
-                    //TODO: add error message
+                    JOptionPane.showMessageDialog(rootPane,"There are only " + conx.CoffeeList.get(cBoxCoffee.getSelectedIndex()).getQuantity() + " available.");
                 }
                 double subTotal = selectedCoffeeCost * quantityToOrder;
                 lblOutputTotal.setText("" + subTotal);
             }
         });
+        
+//        txtQuantity.addKeyListener(new KeyAdapter() {
+//            	@Override
+//            	public void keyTyped(KeyEvent arg0) {
+//            			double selectedCoffeeCost = conx.CoffeeList.get(cBoxCoffee.getSelectedIndex()).getPrice();
+//                        double quantityToOrder = Double.parseDouble((txtQuantity.getText().toString().isEmpty() ? "0.00" : txtQuantity.getText().toString()));
+//                        if (quantityToOrder > conx.CoffeeList.get(cBoxCoffee.getSelectedIndex()).getQuantity()) {
+//                        }
+//                        double subTotal = selectedCoffeeCost * quantityToOrder;
+//                        lblOutputTotal.setText("" + subTotal);
+//            	}
+//            });
 
-        btnGenerateSql.addActionListener(new ActionListener() {
+        btnPlaceOrder.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                System.out.println(("insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) values (" + conx.CustomerList.get(cBoxName.getSelectedIndex()).getID() + ", " + conx.CoffeeList.get(cBoxCoffee.getSelectedIndex()).getID() + ", " + Double.parseDouble(txtQuantity.getText().toString()) + ", " + Double.parseDouble(lblOutputTotal.getText().toString()) + ");"));
+//                System.out.println(("insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) values (" + conx.CustomerList.get(cBoxName.getSelectedIndex()).getID() + ", " + conx.CoffeeList.get(cBoxCoffee.getSelectedIndex()).getID() + ", " + Double.parseDouble(txtQuantity.getText().toString()) + ", " + Double.parseDouble(lblOutputTotal.getText().toString()) + ");"));
+                double selectedCoffeeCost = conx.CoffeeList.get(cBoxCoffee.getSelectedIndex()).getPrice();
+                double quantityToOrder = Double.parseDouble((txtQuantity.getText().toString().isEmpty() ? "0.00" : txtQuantity.getText().toString()));
+                if (quantityToOrder > conx.CoffeeList.get(cBoxCoffee.getSelectedIndex()).getQuantity()) {
+                    JOptionPane.showMessageDialog(rootPane,"There are only " + conx.CoffeeList.get(cBoxCoffee.getSelectedIndex()).getQuantity() + " available.");
+                }
+                else
+                {
+                    conx.newOrder(String.valueOf(conx.CustomerList.get(cBoxName.getSelectedIndex()).getID()),String.valueOf(conx.CoffeeList.get(cBoxCoffee.getSelectedIndex()).getID()),txtQuantity.getText().toString(),String.valueOf(selectedCoffeeCost * quantityToOrder));
+                    JOptionPane.showMessageDialog(rootPane,"Order Placed");
+                    dispose();
+                }
             }
         });
         setVisible(true);
     }
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
-
     }
 }

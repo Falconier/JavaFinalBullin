@@ -2,6 +2,7 @@ package extensions;
 
 //import javax.swing.*;
 
+import com.sun.org.apache.xpath.internal.operations.Or;
 import jdk.nashorn.internal.runtime.ECMAException;
 import models.Coffee;
 import models.Customer;
@@ -36,7 +37,7 @@ public class DBConx {
         }
     }
 
-    //TODO: continue adding insert statments
+
     public void createDefaultTables() {
         try {
             Connection conx = DriverManager.getConnection(conxURL, user, pass);
@@ -91,6 +92,12 @@ public class DBConx {
             sql = "insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) VALUES (5, 3, 1.00, 2.66)";
             statmnt.execute(sql);
             sql = "insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) VALUES (2, 2, 3.00, 8.25)";
+            statmnt.execute(sql);
+            sql = "insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) VALUES (2, 3, 1.00, 2.66)";
+            statmnt.execute(sql);
+            sql = "insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) VALUES (1, 3, 1.00, 2.66)";
+            statmnt.execute(sql);
+            sql = "insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) VALUES (1, 2, 3.00, 8.25)";
             statmnt.execute(sql);
 //            conx.commit();
 
@@ -170,8 +177,36 @@ public class DBConx {
 
     }
 
-    //TODO: write newOrder
+    public void newOrder(String custID, String coffeeID, String quantity, String total) {
+        String id = String.valueOf(OrderList.get(OrderList.size() - 1).getID() + 1);
+        Order newOrder = new Order(id, custID, coffeeID, quantity,total);
+        try {
+            Connection conx = DriverManager.getConnection(conxURL, user, pass);
+            Statement statmnt = conx.createStatement();
+            String sql = "insert into Orders (CustomerID, CoffeeID, QuantityOrdered, Total) VALUES (2, 2, 3.00, 8.25)";
 
+            //TODO: remove balance from Customer creditLimit
+
+            if (!statmnt.execute(sql)) {
+                OrderList.add(newOrder);
+                for(int i = 0;i<CoffeeList.size();i++)
+                {
+                    if(CoffeeList.get(i).getID() == newOrder.getCoffeeID())
+                    {
+                        sql = "update Coffee set QuantityAvailable = " + (CoffeeList.get(i).getQuantity() - Integer.parseInt(quantity)) + " where Coffee.ID = " + coffeeID;
+                        statmnt.execute(sql);
+                        CoffeeList.get(i).setQuantity(CoffeeList.get(i).getQuantity() - Integer.parseInt(quantity));
+                    }
+                }
+
+            } else {
+                System.out.println("Failed to insert new order");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public static void main(String[] args) {
         DBConx conx = new DBConx();

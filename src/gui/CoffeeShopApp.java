@@ -24,7 +24,7 @@ import javax.swing.ImageIcon;
 public class CoffeeShopApp extends JFrame {
     public CoffeeShopApp() {
 
-        //TODO: add paragraph to screen
+        //TODO: add paragraph to screen and move logo image
 
         DBConx conx = new DBConx();
         conx.createDefaultTables();

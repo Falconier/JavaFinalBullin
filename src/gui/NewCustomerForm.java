@@ -1,19 +1,14 @@
 package gui;
 
 import extensions.DBConx;
+import jdk.nashorn.internal.scripts.JO;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 import java.awt.Component;
-import javax.swing.Box;
 import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import javax.swing.SpringLayout;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -166,12 +161,14 @@ public class NewCustomerForm extends JFrame {
         sl_formPnl.putConstraint(SpringLayout.SOUTH, btnValidate, -31, SpringLayout.SOUTH, formPnl);
         formPnl.add(btnValidate);
 
-        JButton btnValidateAndSave = new JButton("Validate and Save");
+        JButton btnValidateAndSave = new JButton("Save");
         btnValidateAndSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 if (validateEntries()) {
                     conx.newCustomer(txtFristName.getText().toString(), txtLastName.getText().toString(), txtAddress.getText().toString(), txtCity.getText().toString(), txtState.getText().toString(), txtZIP.getText().toString(), txtPhone.getText().toString(), txtEmail.getText().toString());
-                    //TODO: make this close the window
+
+                    JOptionPane.showMessageDialog(rootPane,"New Customer Saved");
+                    dispose();
                 }
             }
         });
@@ -228,6 +225,16 @@ public class NewCustomerForm extends JFrame {
         sl_formPnl.putConstraint(SpringLayout.SOUTH, phoneError, 0, SpringLayout.SOUTH, txtZIP);
         sl_formPnl.putConstraint(SpringLayout.EAST, phoneError, -504, SpringLayout.EAST, formPnl);
         formPnl.add(phoneError);
+        
+        JButton btnCancel = new JButton("Cancel");
+        btnCancel.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        			dispose();
+        	}
+        });
+        sl_formPnl.putConstraint(SpringLayout.NORTH, btnCancel, 0, SpringLayout.NORTH, btnValidate);
+        sl_formPnl.putConstraint(SpringLayout.WEST, btnCancel, 27, SpringLayout.EAST, btnValidateAndSave);
+        formPnl.add(btnCancel);
 
         setVisible(true);
 
@@ -295,7 +302,5 @@ public class NewCustomerForm extends JFrame {
     }
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
-
     }
 }
